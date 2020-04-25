@@ -84,7 +84,7 @@ class Sidekick extends StatefulWidget {
     this.flightShuttleBuilder,
     this.placeholderBuilder,
     SidekickAnimationBuilder animationBuilder,
-    this.keepShowingWidget,
+    this.keepSourceWidget,
     @required this.child,
   })  : assert(tag != null),
         assert(child != null),
@@ -139,7 +139,7 @@ class Sidekick extends StatefulWidget {
   final SidekickAnimationBuilder animationBuilder;
 
   /// Keep showing the source "from" widget after it has flown
-  final bool keepShowingWidget;
+  final bool keepSourceWidget;
 
   // Returns a map of all of the sidekicks in context, indexed by sidekick tag.
   static Map<Object, _SidekickState> _allSidekicksFor(BuildContext context) {
@@ -234,7 +234,7 @@ class _SidekickFlightManifest {
       @required this.createRectTween,
       @required this.shuttleBuilder,
       @required this.animationController,
-      @required this.keepShowingFromWidget})
+      @required this.keepSourceWidget})
       : assert((type == SidekickFlightDirection.toTarget &&
                 fromSidekick.widget.targetTag == toSidekick.widget.tag) ||
             (type == SidekickFlightDirection.toSource &&
@@ -248,7 +248,7 @@ class _SidekickFlightManifest {
   final CreateRectTween createRectTween;
   final SidekickFlightShuttleBuilder shuttleBuilder;
   final Animation<double> animationController;
-  final bool keepShowingFromWidget;
+  final bool keepSourceWidget;
 
   Object get tag => fromSidekick.widget.tag;
 
@@ -363,7 +363,7 @@ class _SidekickFlight {
       overlayEntry.remove();
       overlayEntry = null;
 
-      manifest.keepShowingFromWidget ? manifest.fromSidekick.endFlight() : null;
+      manifest.keepSourceWidget ? manifest.fromSidekick.endFlight() : null;
       manifest.toSidekick.endFlight();
       onFlightEnded(this);
     }
@@ -427,7 +427,6 @@ class _SidekickFlight {
         sidekickRectTween = _doCreateRectTween(sidekickRectTween.end,
             _globalBoundingBoxFor(newManifest.toSidekick.context));
       } else {
-        // TODO(hansmuller): Use ReverseTween here per github.com/flutter/flutter/pull/12203.
         sidekickRectTween =
             _doCreateRectTween(sidekickRectTween.end, sidekickRectTween.begin);
       }
@@ -619,7 +618,6 @@ class SidekickController extends Animation<double> {
                 fromSidekick.flightShuttleBuilder;
             final SidekickFlightShuttleBuilder toShuttleBuilder =
                 toSidekick.flightShuttleBuilder;
-            final bool keepShowingFromWidget = fromSidekick?.keepShowingWidget;
 
             final _SidekickFlightManifest manifest = _SidekickFlightManifest(
                 type: flightType,
@@ -632,7 +630,7 @@ class SidekickController extends Animation<double> {
                     fromShuttleBuilder ??
                     _defaultSidekickFlightShuttleBuilder,
                 animationController: _controller.view,
-                keepShowingFromWidget: keepShowingFromWidget ?? false);
+                keepSourceWidget: fromSidekick.keepSourceWidget ?? false);
 
             if (_flights[tag] != null) {
               _flights[tag].divert(manifest);

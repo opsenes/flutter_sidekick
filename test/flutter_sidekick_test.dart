@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_sidekick/flutter_sidekick.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 Duration frameDuration = const Duration(milliseconds: 16);
 Key simpleSource = const Key('simple-source');
@@ -53,7 +53,7 @@ class _SimpleExampleState extends State<SimpleExample>
               child: Sidekick(
                 tag: widget.sourceTag,
                 targetTag: widget.targetTag,
-                keepShowingWidget: widget.keepShowingSource,
+                keepSourceWidget: widget.keepShowingSource,
                 child: Container(
                   key: simpleSource,
                   color: Colors.blue,
@@ -139,9 +139,9 @@ class SidekickTeamBuilderExample extends StatelessWidget {
                       to,
                     ) =>
                         buildShuttle(
-                          animation,
-                          builderDelegate.message.message,
-                        ),
+                      animation,
+                      builderDelegate.message.message,
+                    ),
                   );
                 }).toList(),
               ),
@@ -189,9 +189,9 @@ class SidekickTeamBuilderExample extends StatelessWidget {
                     to,
                   ) =>
                       buildShuttle(
-                        animation,
-                        builderDelegate.message.message,
-                      ),
+                    animation,
+                    builderDelegate.message.message,
+                  ),
                 );
               }).toList(),
             ),
